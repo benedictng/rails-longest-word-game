@@ -2,3 +2,13 @@
 <p>Find me in app/views/game/score.html.erb</p>
 <p>Score: <%= @score %></p>
 <p>Message: <%= @message %></p>
+
+<p class = "border border-10">Cumulated Statistics</p>
+<p>Total Score: <%= @total_score %></p>
+<p>Number of Games: <%= @num_games %></p>
+<p>Average Score: <%= @total_score/@num_games.to_f %></p>
+<form action="new" method="GET">
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+  <input type="submit" value="Play again!">
+</form>
+<p>

@@ -4,15 +4,36 @@ require 'json'
 class GameController < ApplicationController
   def new
     @grid = generate_grid(10)
-    grid = @grid
+    session[:grid] = @grid
   end
 
   def score
+    @score = session[:tempScore]
+    @message = session[:tempMessage]
+    if session[:score]
+      session[:score] += @score
+    else
+      session[:score] = 1
+    end
+
+    if session[:count]
+      session[:count] += 1
+    else
+      session[:count] = 1
+    end
+
+    @total_score = session[:score]
+    @num_games = session[:count]
+  end
+
+  def calc
     @answer = params['answer']
-    @grid = params['grid'].split
+    @grid = session[:grid]
     result = run_game(@answer, @grid)
-    @score = result[:score]
-    @message = result[:message]
+    session[:tempScore] = result[:score]
+    session[:tempMessage] = result[:message]
+    redirect_to :action => "score"
+
   end
 
   private
@@ -21,7 +42,7 @@ class GameController < ApplicationController
     # TODO: generate random grid of letters
     arr = []
     grid_size.times { arr.push(('A'..'Z').to_a.sample) }
-    return arr
+    arr
   end
 
   def run_game(attempt, grid)
